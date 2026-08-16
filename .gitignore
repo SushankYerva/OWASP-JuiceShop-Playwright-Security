@@ -1,0 +1,12 @@
+node_modules/
+
+.env
+.env.*
+!.env.example
+
+test-results/
+playwright-report/
+reports/
+blob-report/
+
+playwright/.auth/
