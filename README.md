@@ -1,21 +1,44 @@
-# Validation Documentation Pack
+# Playwright Security Validation Framework
 
-This folder contains the validation documentation for the Playwright TypeScript automation framework.
+[![Playwright Tests](https://github.com/SushankYerva/OWASP-JuiceShop-Playwright-Security/actions/workflows/playwright.yml/badge.svg)](https://github.com/SushankYerva/OWASP-JuiceShop-Playwright-Security/actions/workflows/playwright.yml)
+![Playwright](https://img.shields.io/badge/Playwright-TypeScript-2EAD33)
+![Docker](https://img.shields.io/badge/Test%20Environment-Docker-2496ED)
+![License](https://img.shields.io/badge/License-MIT-blue)
 
-## Documents
+A Playwright and TypeScript automation framework demonstrating
+UI, API, authentication, authorization and security-focused
+validation against OWASP Juice Shop.
 
-1. [Test Strategy](01-test-strategy.md)
-2. [Requirements Traceability Matrix](02-requirements-traceability-matrix.md)
-3. [Test Execution Report](03-test-execution-report.md)
-4. [Defect Report Template](04-defect-report-template.md)
-5. [Validation Summary Report](05-validation-summary-report.md)
+## Key features
 
-## Completion order
+- Anonymous and authenticated Playwright projects
+- Dynamically generated test users
+- Reusable authenticated browser state
+- Authentication and logout validation
+- Negative login testing
+- Role-based access validation
+- Centralized startup-overlay handling
+- Docker-based test environment
+- GitHub Actions CI execution
+- HTML reports, screenshots, traces and videos
+- Test strategy, traceability and validation documentation
 
-1. Approve the test strategy and requirements.
-2. Run the complete suite locally and in GitHub Actions.
-3. Update the execution report with the actual run ID, commit SHA and results.
-4. Record confirmed failures using the defect template.
-5. Complete and approve the validation summary report.
+## Technology
 
-Do not mark a test as passed without retained execution evidence.
+- Playwright
+- TypeScript
+- Node.js
+- Docker
+- GitHub Actions
+
+## Prerequisites
+
+- Node.js 20+
+- Docker Desktop
+- Git
+
+## Installation
+
+```bash
+npm ci
+npx playwright install chromium
