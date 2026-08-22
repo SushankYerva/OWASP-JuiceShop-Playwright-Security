@@ -7,11 +7,11 @@ import {
 
 import {
   createTestUser,
-} from '../../src/utils/test-user';
+} from '@utils/test-user';
 
 import {
   dismissStartupOverlays,
-} from '../../src/utils/startup-overlays';
+} from '@helpers/startup-overlays';
 
 const authFile = path.join(
   process.cwd(),

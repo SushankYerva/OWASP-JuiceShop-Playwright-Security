@@ -5,7 +5,7 @@ import {
 
 import {
   dismissStartupOverlays,
-} from '../../../src/utils/startup-overlays';
+} from '@helpers/startup-overlays';
 
 test(
   'anonymous user is presented with login option',

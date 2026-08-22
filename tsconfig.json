@@ -5,11 +5,23 @@
     "strict": true,
     "types": ["node", "@playwright/test"],
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@config/*": ["./config/*"],
+
+      "@framework/*": ["./framework/*"],
+      "@fixtures/*": ["./framework/fixtures/*"],
+      "@helpers/*": ["./framework/helpers/*"],
+      "@pages/*": ["./framework/pages/*"],
+      "@components/*": ["./framework/components/*"],
+      "@api/*": ["./framework/api/*"],
+      "@data/*": ["./framework/data/*"],
+      "@utils/*": ["./framework/utils/*"]
+    }
   },
   "include": [
     "playwright.config.ts",
     "src/**/*.ts",
     "tests/**/*.ts"
-  ]
+, "framework/utils/test-user.ts"  ]
 }

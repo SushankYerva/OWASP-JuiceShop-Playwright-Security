@@ -6,7 +6,7 @@ import {
 
 import {
   dismissStartupOverlays,
-} from '../utils/startup-overlays';
+} from '../helpers/startup-overlays';
 
 interface AppFixtures {
   appPage: Page;
