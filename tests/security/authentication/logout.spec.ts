@@ -1,11 +1,8 @@
 import {
   test,
   expect,
-} from '@playwright/test';
-import { frameworkPaths } from '@config/paths';
-test.use({
-  storageState: frameworkPaths.authState,
-});
+} from '@fixtures/auth.fixture';
+
 test(
   'logout removes authenticated browser state',
   {
@@ -17,13 +14,13 @@ test(
   },
   async ({ page, context }) => {
 
+    // Navigate to Juice Shop origin first.
     await page.goto('/');
 
-    // Verify token exists before logout
-    const tokenBeforeLogout =
-      await page.evaluate(() =>
-        localStorage.getItem('token'),
-      );
+    // Verify token exists before logout.
+    const tokenBeforeLogout = await page.evaluate(() =>
+      localStorage.getItem('token'),
+    );
 
     expect(tokenBeforeLogout).toBeTruthy();
 
@@ -34,44 +31,45 @@ test(
       },
     ).click();
 
-    const logout =
-      page.getByRole(
-        'menuitem',
-        {
-          name: 'Logout',
-        },
-      );
+    const logout = page.getByRole(
+      'menuitem',
+      {
+        name: 'Logout',
+      },
+    );
 
     await expect(logout).toBeVisible();
 
     await logout.click();
 
-    // Verify localStorage token was removed
-    const tokenAfterLogout =
-      await page.evaluate(() =>
-        localStorage.getItem('token'),
-      );
+    // Verify localStorage token was removed.
+    await expect
+      .poll(async () =>
+        page.evaluate(() =>
+          localStorage.getItem('token'),
+        ),
+      )
+      .toBeNull();
 
-    expect(tokenAfterLogout).toBeNull();
+    // Optional cookie validation.
+    const cookies = await context.cookies();
 
-    // Verify authentication cookie was removed
-    const cookies =
-      await context.cookies();
-
-    const tokenCookie =
-      cookies.find(
-        cookie => cookie.name === 'token',
-      );
+    const tokenCookie = cookies.find(
+      cookie => cookie.name === 'token',
+    );
 
     expect(tokenCookie).toBeUndefined();
 
-    // UI should now show Login instead of Logout
-    await page.getByRole(
+    // Verify logged-out UI.
+    const accountMenu = page.getByRole(
       'button',
       {
         name: 'Show/hide account menu',
       },
-    ).click();
+    );
+
+    await expect(accountMenu).toBeVisible();
+    await accountMenu.click();
 
     await expect(
       page.getByRole(
