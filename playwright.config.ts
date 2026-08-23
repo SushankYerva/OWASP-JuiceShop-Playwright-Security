@@ -1,4 +1,6 @@
+import { runtimeConfig } from './config/runtime';
 import path from 'node:path';
+import { validateConfiguration } from './config/validation';
 
 import {
   defineConfig,
@@ -11,22 +13,26 @@ const authFile = path.join(
   '.auth',
   'user.json',
 );
-
+const environment = validateConfiguration();
 export default defineConfig({
 
   testDir: './tests',
 
-  fullyParallel: false,
-
-  workers: 1,
-
-  retries: process.env.CI ? 1 : 0,
-
-  timeout: 30_000,
+  timeout: runtimeConfig.testTimeoutMs,
 
   expect: {
-    timeout: 10_000,
+    timeout: runtimeConfig.expectTimeoutMs,
   },
+
+  forbidOnly: runtimeConfig.forbidOnly,
+
+  fullyParallel: false,
+
+  retries: runtimeConfig.retries,
+
+  workers: runtimeConfig.workers,
+  
+  outputDir: 'test-results',
 
   reporter: [
     ['list'],
@@ -40,56 +46,32 @@ export default defineConfig({
   ],
 
   use: {
-    baseURL:
-      process.env.BASE_URL ??
-      'http://127.0.0.1:3000',
+    baseURL: environment.baseURL,
 
-    trace: 'on-first-retry',
+    trace: runtimeConfig.trace,
 
-    screenshot: 'only-on-failure',
+    screenshot: runtimeConfig.screenshot,
 
-    video: 'retain-on-failure',
+    video: runtimeConfig.video,
   },
 
   projects: [
 
     {
-      name: 'setup',
+    name: 'setup',
+    testMatch: /.*\.setup\.ts/,
+  },
 
-      testMatch:
-        '**/*.setup.ts',
+  {
+    name: 'chromium',
+    testIgnore: /.*\.setup\.ts/,
 
-      use: {
-        ...devices['Desktop Chrome'],
-      },
+    use: {
+      ...devices['Desktop Chrome'],
     },
 
-    {
-      name: 'chromium-anonymous',
-
-      testIgnore: '**/*.setup.ts',
-
-      grepInvert: /@authenticated/,
-
-      use: {
-        ...devices['Desktop Chrome'],
-      },
-    },
-
-    {
-      name: 'chromium-authenticated',
-
-      testIgnore: '**/*.setup.ts',
-
-      grep: /@authenticated/,
-
-      dependencies: ['setup'],
-
-      use: {
-        ...devices['Desktop Chrome'],
-        storageState: authFile,
-      },
-    },
+    dependencies: ['setup'],
+  },
 
   ],
 

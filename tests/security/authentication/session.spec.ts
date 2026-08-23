@@ -2,7 +2,10 @@ import {
   test,
   expect,
 } from '@playwright/test';
-
+import { frameworkPaths } from '@config/paths';
+test.use({
+  storageState: frameworkPaths.authState,
+});
 test(
   'authenticated session is reused',
   {

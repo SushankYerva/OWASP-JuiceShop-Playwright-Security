@@ -21,7 +21,7 @@
   },
   "include": [
     "playwright.config.ts",
-    "src/**/*.ts",
+    "config/**/*.ts",
     "tests/**/*.ts"
-, "framework/utils/test-user.ts"  ]
+,   "framework/data/test-user.ts"  ]
 }

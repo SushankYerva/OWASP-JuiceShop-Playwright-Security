@@ -16,6 +16,11 @@
   "type": "commonjs",
   "devDependencies": {
     "@playwright/test": "^1.62.1",
-    "@types/node": "^26.2.0"
+    "@types/node": "^26.2.0",
+    "dotenv": "^17.4.2",
+    "globals": "^17.11.0"
+  },
+  "dependencies": {
+    "typescript": "^7.0.2"
   }
 }

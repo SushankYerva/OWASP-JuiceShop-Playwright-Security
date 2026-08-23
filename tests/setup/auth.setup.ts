@@ -7,7 +7,7 @@ import {
 
 import {
   createTestUser,
-} from '@utils/test-user';
+} from '@data/test-user.factory';
 
 import {
   dismissStartupOverlays,
