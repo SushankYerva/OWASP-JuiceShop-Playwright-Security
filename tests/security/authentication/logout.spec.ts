@@ -3,6 +3,10 @@ import {
   expect,
 } from '@fixtures/auth.fixture';
 
+import {
+  NavbarComponent,
+} from '@components/navbar.component';
+
 test(
   'logout removes authenticated browser state',
   {
@@ -13,45 +17,30 @@ test(
     ],
   },
   async ({ page, context }) => {
+    const navbar = new NavbarComponent(page);
 
-    // Navigate to Juice Shop origin first.
     await page.goto('/');
 
-    // Verify token exists before logout.
     const tokenBeforeLogout = await page.evaluate(() =>
       localStorage.getItem('token'),
     );
 
     expect(tokenBeforeLogout).toBeTruthy();
 
-    await page.getByRole(
-      'button',
-      {
-        name: 'Show/hide account menu',
-      },
-    ).click();
+    await navbar.openAccountMenu();
 
-    const logout = page.getByRole(
-      'menuitem',
-      {
-        name: 'Logout',
-      },
+    await expect(
+      navbar.logoutMenuItem,
+    ).toBeVisible();
+
+    await navbar.logoutMenuItem.click();
+
+    const tokenAfterLogout = await page.evaluate(() =>
+      localStorage.getItem('token'),
     );
 
-    await expect(logout).toBeVisible();
+    expect(tokenAfterLogout).toBeNull();
 
-    await logout.click();
-
-    // Verify localStorage token was removed.
-    await expect
-      .poll(async () =>
-        page.evaluate(() =>
-          localStorage.getItem('token'),
-        ),
-      )
-      .toBeNull();
-
-    // Optional cookie validation.
     const cookies = await context.cookies();
 
     const tokenCookie = cookies.find(
@@ -60,24 +49,10 @@ test(
 
     expect(tokenCookie).toBeUndefined();
 
-    // Verify logged-out UI.
-    const accountMenu = page.getByRole(
-      'button',
-      {
-        name: 'Show/hide account menu',
-      },
-    );
-
-    await expect(accountMenu).toBeVisible();
-    await accountMenu.click();
+    await navbar.openAccountMenu();
 
     await expect(
-      page.getByRole(
-        'menuitem',
-        {
-          name: 'Go to login page',
-        },
-      ),
+      navbar.loginMenuItem,
     ).toBeVisible();
   },
 );
