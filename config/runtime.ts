@@ -12,8 +12,8 @@ export const runtimeConfig = {
 
   // Start conservatively in CI.
   // We can increase this after proving all tests are isolated.
-  workers: isCI ? 1 : undefined,
-
+  //workers: isCI ? 1 : undefined,
+    workers: 1,
   // Prevent accidental test.only from reaching CI
   forbidOnly: isCI,
 

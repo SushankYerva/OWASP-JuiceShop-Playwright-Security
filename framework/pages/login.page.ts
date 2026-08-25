@@ -27,12 +27,7 @@ export class LoginPage {
       },
     );
 
-    this.loginButton = page.getByRole(
-      'button',
-      {
-        name: /log in/i,
-      },
-    );
+    this.loginButton = page.locator('#loginButton');
   }
 
   async goto(): Promise<void> {

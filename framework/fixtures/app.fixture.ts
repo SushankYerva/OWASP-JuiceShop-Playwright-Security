@@ -1,27 +1,24 @@
 import {
   test as base,
   expect,
-  type Page,
 } from '@playwright/test';
 
 import {
   dismissStartupOverlays,
 } from '../helpers/startup-overlays';
 
-interface AppFixtures {
-  appPage: Page;
-}
+export const test = base.extend({
+  page: async ({ page }, use) => {
 
-export const test =
-  base.extend<AppFixtures>({
-    appPage: async ({ page }, use) => {
+    // Load Juice Shop first.
+    await page.goto('/');
 
-      await page.goto('/');
+    // Remove application startup overlays.
+    await dismissStartupOverlays(page);
 
-      await dismissStartupOverlays(page);
-
-      await use(page);
-    },
-  });
+    // Only now give the page to the test.
+    await use(page);
+  },
+});
 
 export { expect };

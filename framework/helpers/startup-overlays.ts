@@ -1,22 +1,46 @@
-import type { Page } from '@playwright/test';
+import { Page } from '@playwright/test';
 
 export async function dismissStartupOverlays(
-  page: Page
+  page: Page,
 ): Promise<void> {
 
-  // Close welcome popup first
-  const welcomeButton = page.getByRole('button', {
-    name: 'Close Welcome Banner',
-    exact: true,
-  });
+  // Welcome dialog
+  const dismissWelcomeButton = page.getByRole(
+    'button',
+    {
+      name: 'Close Welcome Banner',
+      exact: true,
+    },
+  );
 
-  await welcomeButton.click();
+  try {
+    await dismissWelcomeButton.waitFor({
+      state: 'visible',
+      timeout: 1500,
+    });
 
-  // Then close cookie banner
-  const cookieButton = page.getByRole('button', {
-    name: 'dismiss cookie message',
-    exact: true,
-  });
+    await dismissWelcomeButton.click();
+  } catch {
+    // Welcome dialog is not present.
+  }
 
-  await cookieButton.click();
+  // Cookie banner
+  const cookieButton = page.getByRole(
+    'button',
+    {
+      name: 'dismiss cookie message',
+      exact: true,
+    },
+  );
+
+  try {
+    await cookieButton.waitFor({
+      state: 'visible',
+      timeout: 1500,
+    });
+
+    await cookieButton.click();
+  } catch {
+    // Cookie banner is not present.
+  }
 }

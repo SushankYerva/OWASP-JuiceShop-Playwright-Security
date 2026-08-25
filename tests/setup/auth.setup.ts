@@ -1,10 +1,12 @@
 import path from 'node:path';
-
+import fs from 'fs';
 import {
   test as setup,
   expect,
 } from '@playwright/test';
-
+import {
+  frameworkPaths,
+} from '@config/paths'
 import {
   createTestUser,
 } from '@data/test-user.factory';
@@ -89,8 +91,19 @@ setup(
     await page.keyboard.press('Escape');
 
     // 7. Save authenticated state ONLY now
+    
     await page.context().storageState({
-      path: authFile,
+      path: frameworkPaths.authState,
     });
+
+    const sessionStorage = await page.evaluate(() =>
+      JSON.stringify(window.sessionStorage),
+    );
+
+    fs.writeFileSync(
+      frameworkPaths.sessionState,
+      sessionStorage,
+      'utf-8',
+    );
   },
 );
