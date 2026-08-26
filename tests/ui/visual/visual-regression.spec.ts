@@ -23,10 +23,12 @@ test(
     ).toBeVisible();
 
     await expect(page).toHaveScreenshot(
-      'product-catalogue.png',
-      {
+    'login-page.png',
+    {
         fullPage: true,
-      },
+        animations: 'disabled',
+        caret: 'hide',
+    },
     );
   },
 );
@@ -61,10 +63,12 @@ test(
     ).toBeDisabled();
 
     await expect(page).toHaveScreenshot(
-      'login-page.png',
-      {
+    'login-page.png',
+    {
         fullPage: true,
-      },
+        animations: 'disabled',
+        caret: 'hide',
+    },
     );
   },
 );

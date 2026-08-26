@@ -33,7 +33,7 @@ export default defineConfig({
   workers: runtimeConfig.workers,
   
   outputDir: 'test-results',
-
+  snapshotPathTemplate: '{testDir}/{testFilePath}-snapshots/{arg}-{projectName}-{platform}{ext}',
   reporter: [
     ['list'],
     [
