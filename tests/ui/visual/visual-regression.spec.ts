@@ -18,17 +18,30 @@ test(
   async ({ page }) => {
     await page.goto('/#/search');
 
+    const productCards =
+      page.locator('mat-card');
+
     await expect(
-      page.locator('mat-card').first(),
+      productCards.first(),
     ).toBeVisible();
 
+    // Wait until the catalogue has actually rendered.
+    await expect(
+      productCards,
+    ).not.toHaveCount(0);
+
+    // Let Angular finish rendering the UI.
+    await page.waitForLoadState(
+      'networkidle',
+    );
+
     await expect(page).toHaveScreenshot(
-    'login-page.png',
-    {
+      'product-catalogue.png',
+      {
         fullPage: true,
         animations: 'disabled',
         caret: 'hide',
-    },
+      },
     );
   },
 );
@@ -48,7 +61,6 @@ test(
 
     await loginPage.goto();
 
-    // Make sure the page has fully rendered.
     await expect(
       loginPage.emailInput,
     ).toBeVisible();
@@ -57,18 +69,21 @@ test(
       loginPage.passwordInput,
     ).toBeVisible();
 
-    // Correct initial login-page state.
     await expect(
       loginPage.loginButton,
     ).toBeDisabled();
 
+    await page.waitForLoadState(
+      'networkidle',
+    );
+
     await expect(page).toHaveScreenshot(
-    'login-page.png',
-    {
+      'login-page.png',
+      {
         fullPage: true,
         animations: 'disabled',
         caret: 'hide',
-    },
+      },
     );
   },
 );
