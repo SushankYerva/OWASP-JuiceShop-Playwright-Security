@@ -38,6 +38,21 @@ test(
           violation.impact === 'critical',
       );
 
+      console.log(
+        'ACCESSIBILITY VIOLATIONS:',
+        JSON.stringify(
+            seriousViolations.map(violation => ({
+            id: violation.id,
+            impact: violation.impact,
+            nodes: violation.nodes.length,
+            targets: violation.nodes.map(
+                node => node.target,
+            ),
+            })),
+            null,
+            2,
+        ),
+    );
     const unexpectedViolations =
       seriousViolations.filter(
         violation => {
@@ -100,6 +115,22 @@ test(
           violation.impact === 'critical',
       );
 
+
+      console.log(
+        'ACCESSIBILITY VIOLATIONS:',
+        JSON.stringify(
+            seriousViolations.map(violation => ({
+            id: violation.id,
+            impact: violation.impact,
+            nodes: violation.nodes.length,
+            targets: violation.nodes.map(
+                node => node.target,
+            ),
+            })),
+            null,
+            2,
+        ),
+    );
     const unexpectedViolations =
       seriousViolations.filter(
         violation => {
