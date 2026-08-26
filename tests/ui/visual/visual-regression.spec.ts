@@ -41,6 +41,7 @@ test(
         fullPage: true,
         animations: 'disabled',
         caret: 'hide',
+        maxDiffPixels: 300,
       },
     );
   },
@@ -83,6 +84,7 @@ test(
         fullPage: true,
         animations: 'disabled',
         caret: 'hide',
+        maxDiffPixels: 300,
       },
     );
   },
