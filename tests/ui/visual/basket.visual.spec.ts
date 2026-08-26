@@ -49,10 +49,12 @@ test(
     ).toBeVisible();
 
     await expect(page).toHaveScreenshot(
-      'basket-page.png',
-      {
+    'login-page.png',
+    {
         fullPage: true,
-      },
+        animations: 'disabled',
+        caret: 'hide',
+    },
     );
   },
 );
