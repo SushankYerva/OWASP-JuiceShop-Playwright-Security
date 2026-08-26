@@ -23,5 +23,5 @@
     "playwright.config.ts",
     "config/**/*.ts",
     "tests/**/*.ts"
-,   "framework/data/test-user.ts"  ]
+,   "framework/**/*.ts"  ]
 }

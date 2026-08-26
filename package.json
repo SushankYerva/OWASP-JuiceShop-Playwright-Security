@@ -10,6 +10,8 @@
     "test:anonymous": "playwright test --project=chromium-anonymous",
     "test:authenticated": "playwright test --project=chromium-authenticated",
     "test:headed": "playwright test --headed",
+    "test:api": "playwright test --project=api",
+    "test:api:parallel": "playwright test --project=api --workers=4",
     "report": "playwright show-report reports/html"
   },
   "keywords": [],
@@ -18,7 +20,8 @@
     "@playwright/test": "^1.62.1",
     "@types/node": "^26.2.0",
     "dotenv": "^17.4.2",
-    "globals": "^17.11.0"
+    "globals": "^17.11.0",
+    "zod": "^4.4.3"
   },
   "dependencies": {
     "typescript": "^7.0.2"

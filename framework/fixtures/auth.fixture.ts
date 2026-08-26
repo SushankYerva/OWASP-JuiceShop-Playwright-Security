@@ -3,7 +3,7 @@ import fs from 'fs';
 import {
   test as appTest,
   expect,
-} from './app.fixture';
+} from '@fixtures/app.fixture';
 
 import {
   frameworkPaths,

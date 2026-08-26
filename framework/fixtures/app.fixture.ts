@@ -5,7 +5,7 @@ import {
 
 import {
   dismissStartupOverlays,
-} from '../helpers/startup-overlays';
+} from '@helpers/startup-overlays';
 
 export const test = base.extend({
   page: async ({ page }, use) => {
