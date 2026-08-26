@@ -1,6 +1,7 @@
 export const accessibilityBaseline = {
   home: {
     label: 1,
+    'color-contrast': 1,
   },
   login: {
     label: 1,
