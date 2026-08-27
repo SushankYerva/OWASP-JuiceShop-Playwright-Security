@@ -50,42 +50,29 @@ test(
 test(
   'login page visual baseline',
   {
-    tag: [
-      '@ui',
-      '@visual',
-      '@authentication',
-    ],
+    tag: ['@ui', '@visual', '@authentication'],
   },
   async ({ page }) => {
-    const loginPage =
-      new LoginPage(page);
+    const loginPage = new LoginPage(page);
 
     await loginPage.goto();
 
-    await expect(
-      loginPage.emailInput,
-    ).toBeVisible();
+    await expect(loginPage.emailInput).toBeVisible();
+    await expect(loginPage.passwordInput).toBeVisible();
+    await expect(loginPage.loginButton).toBeDisabled();
 
-    await expect(
-      loginPage.passwordInput,
-    ).toBeVisible();
-
-    await expect(
-      loginPage.loginButton,
-    ).toBeDisabled();
-
-    const googleLoginButton =
-      page.locator('#loginButtonGoogle');
-
-    await expect(
-      googleLoginButton,
-      ).toBeVisible({
-        timeout: 10_000,
+    await page.evaluate(async () => {
+      await document.fonts.ready;
     });
 
-    await page.waitForLoadState(
-      'networkidle',
-    );
+    const languageNotification =
+      page.getByText(/Language has been changed to English/i);
+
+    if (await languageNotification.isVisible().catch(() => false)) {
+      await expect(languageNotification).toBeHidden({
+        timeout: 15_000,
+      });
+    }
 
     await expect(page).toHaveScreenshot(
       'login-page.png',
@@ -93,7 +80,6 @@ test(
         fullPage: true,
         animations: 'disabled',
         caret: 'hide',
-        maxDiffPixels: 300,
       },
     );
   },
