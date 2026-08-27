@@ -49,7 +49,7 @@ test(
     ).toBeVisible();
 
     await expect(page).toHaveScreenshot(
-    'login-page.png',
+    'basket-page.png',
     {
         fullPage: true,
         animations: 'disabled',
