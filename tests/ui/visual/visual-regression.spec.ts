@@ -74,6 +74,15 @@ test(
       loginPage.loginButton,
     ).toBeDisabled();
 
+    const googleLoginButton =
+      page.locator('#loginButtonGoogle');
+
+    await expect(
+      googleLoginButton,
+      ).toBeVisible({
+        timeout: 10_000,
+    });
+
     await page.waitForLoadState(
       'networkidle',
     );
@@ -84,7 +93,7 @@ test(
         fullPage: true,
         animations: 'disabled',
         caret: 'hide',
-        maxDiffPixels: 2000,
+        maxDiffPixels: 300,
       },
     );
   },
