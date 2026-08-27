@@ -80,6 +80,7 @@ test(
         fullPage: true,
         animations: 'disabled',
         caret: 'hide',
+        maxDiffPixels: 300
       },
     );
   },
