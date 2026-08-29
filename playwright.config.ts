@@ -7,6 +7,13 @@ import {
   devices,
 } from '@playwright/test';
 
+const apiOnlyTests = [
+  /tests[\\/]api[\\/].*\.spec\.ts/,
+  /tests[\\/]security[\\/]api-security[\\/].*\.spec\.ts/,
+  /tests[\\/]security[\\/]headers[\\/].*\.spec\.ts/,
+  /tests[\\/]security[\\/]input-validation[\\/]api-.*\.spec\.ts/,
+];
+
 const authFile = path.join(
   process.cwd(),
   'playwright',
@@ -56,8 +63,7 @@ export default defineConfig({
   },
 
   projects: [
-
-      {
+    {
       name: 'setup',
       testMatch: /.*\.setup\.ts/,
     },
@@ -67,22 +73,23 @@ export default defineConfig({
 
       testIgnore: [
         /.*\.setup\.ts/,
-        /api[\\/].*\.spec\.ts/,
+        ...apiOnlyTests,
       ],
 
       use: {
         ...devices['Desktop Chrome'],
       },
 
-      dependencies: ['setup'],
+      dependencies: [
+        'setup',
+      ],
     },
 
     {
       name: 'api',
 
-      testMatch: /api[\\/].*\.spec\.ts/,
+      testMatch: apiOnlyTests,
     },
-
   ],
 
 });

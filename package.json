@@ -5,14 +5,24 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
-    "test:security": "playwright test --grep @security",
+    
     "test:smoke": "playwright test --grep @smoke",
     "test:anonymous": "playwright test --project=chromium-anonymous",
     "test:authenticated": "playwright test --project=chromium-authenticated",
     "test:headed": "playwright test --headed",
+    
+    
+    "report": "playwright show-report reports/html",
     "test:api": "playwright test --project=api",
     "test:api:parallel": "playwright test --project=api --workers=4",
-    "report": "playwright show-report reports/html"
+
+    "test:security": "playwright test tests/security --project=chromium && playwright test tests/security --project=api",
+
+    "test:security:browser": "playwright test tests/security --project=chromium",
+
+    "test:security:api": "playwright test tests/security --project=api",
+
+    "test:security:headed": "playwright test tests/security --project=chromium --headed"
   },
   "keywords": [],
   "type": "commonjs",
