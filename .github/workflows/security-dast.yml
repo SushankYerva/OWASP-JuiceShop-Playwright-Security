@@ -63,12 +63,12 @@ jobs:
           docker run --rm \
             --network dast-network \
             -v "${{ github.workspace }}/security/reports:/zap/wrk:rw" \
+            -v "${{ github.workspace }}/security/dast:/zap/config:ro" \
             ghcr.io/zaproxy/zaproxy:2.17.0 \
             zap-full-scan.py \
             -t http://juice-shop:3000 \
             -m 3 \
-            -I \
-            -d \
+            -c /zap/config/zap-full.conf \
             -r zap-full.html \
             -J zap-full.json \
             -w zap-full.md \
