@@ -17,17 +17,14 @@ export class BasketPage {
   productRow(
     productName: string,
   ): Locator {
-    const escapedName = productName.replace(
-      /[.*+?^${}()|[\]\\]/g,
-      '\\$&',
-    );
-
     return this.page
       .locator('mat-row')
       .filter({
-        hasText: new RegExp(
-          `\\b${escapedName}\\b`,
-          'i',
+        has: this.page.getByText(
+          productName,
+          {
+            exact: true,
+          },
         ),
       });
   }

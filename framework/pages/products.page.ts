@@ -43,19 +43,16 @@ export class ProductsPage {
 
   productByName(
     productName: string,
-    ): Locator {
-    const escapedName = productName.replace(
-        /[.*+?^${}()|[\]\\]/g,
-        '\\$&',
-    );
-
+  ): Locator {
     return this.productCards.filter({
-        hasText: new RegExp(
-        `\\b${escapedName}\\b`,
-        'i',
-        ),
+      has: this.page.getByText(
+        productName,
+        {
+          exact: true,
+        },
+      ),
     });
-    }
+  }
 
   async addToBasket(
     productName: string,

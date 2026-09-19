@@ -1,0 +1,118 @@
+name: Container Security - Trivy
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  framework-security:
+    name: Framework Trivy Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Install Trivy
+        uses: aquasecurity/setup-trivy@3fb12ec12f41e471780db15c232d5dd185dcb514 # v0.2.6
+        with:
+          version: v0.74.0
+          cache: true
+
+      - name: Create report directory
+        run: mkdir -p security/reports
+
+      - name: Scan framework repository
+        run: |
+            trivy fs \
+            --scanners vuln,misconfig,secret \
+            --severity HIGH,CRITICAL \
+            --skip-dirs playwright/.auth \
+            --skip-dirs node_modules \
+            --skip-dirs test-results \
+            --skip-dirs playwright-report \
+            --exit-code 1 \
+            --format table \
+            .
+
+      - name: Generate framework SARIF report
+        if: always()
+        run: |
+            trivy fs \
+            --scanners vuln,misconfig,secret \
+            --severity HIGH,CRITICAL \
+            --skip-dirs playwright/.auth \
+            --skip-dirs node_modules \
+            --skip-dirs test-results \
+            --skip-dirs playwright-report \
+            --format sarif \
+            --output security/reports/trivy-framework.sarif \
+            .
+
+      - name: Upload framework Trivy artifact
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: trivy-framework-report
+          path: security/reports/trivy-framework.sarif
+          retention-days: 30
+
+      - name: Upload Trivy results to GitHub Code Scanning
+        if: always()
+        uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4
+        with:
+          sarif_file: security/reports/trivy-framework.sarif
+          category: trivy-framework
+
+
+  juice-shop-container:
+    name: Juice Shop Container Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Install Trivy
+        uses: aquasecurity/setup-trivy@3fb12ec12f41e471780db15c232d5dd185dcb514 # v0.2.6
+        with:
+          version: v0.74.0
+          cache: true
+
+      - name: Create report directory
+        run: mkdir -p security/reports
+
+      - name: Scan Juice Shop image
+        run: |
+          trivy image \
+            --severity HIGH,CRITICAL \
+            --ignore-unfixed \
+            --format table \
+            bkimminich/juice-shop:latest || true
+
+      - name: Generate Juice Shop JSON report
+        run: |
+          trivy image \
+            --severity HIGH,CRITICAL \
+            --ignore-unfixed \
+            --format json \
+            --output security/reports/trivy-juice-shop.json \
+            bkimminich/juice-shop:latest
+
+      - name: Upload Juice Shop container report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: trivy-juice-shop-container-report
+          path: security/reports/trivy-juice-shop.json
+          retention-days: 30

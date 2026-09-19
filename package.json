@@ -22,7 +22,9 @@
 
     "test:security:api": "playwright test tests/security --project=api",
 
-    "test:security:headed": "playwright test tests/security --project=chromium --headed"
+    "test:security:headed": "playwright test tests/security --project=chromium --headed",
+    "security:sca": "npm audit --audit-level=high",
+    "security:sca:report": "npm audit --json > security/reports/npm-audit.json"
   },
   "keywords": [],
   "type": "commonjs",

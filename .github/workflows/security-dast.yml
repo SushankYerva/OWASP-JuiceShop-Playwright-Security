@@ -1,0 +1,75 @@
+name: DAST - OWASP ZAP
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  zap-full-scan:
+    name: ZAP Full Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Create report directory
+        run: mkdir -p security/reports
+
+      - name: Start OWASP Juice Shop
+        run: |
+          docker run -d \
+            --name juice-shop \
+            -p 3000:3000 \
+            bkimminich/juice-shop:v20.2.0
+
+      - name: Wait for Juice Shop
+        run: |
+          for i in {1..30}; do
+            if curl -fsS http://localhost:3000 > /dev/null; then
+              echo "Juice Shop is ready"
+              exit 0
+            fi
+
+            echo "Waiting for Juice Shop..."
+            sleep 5
+          done
+
+          echo "Juice Shop failed to start"
+          docker logs juice-shop
+          exit 1
+
+      - name: Run ZAP full scan
+        run: |
+          docker run --rm \
+            --network host \
+            -v "${{ github.workspace }}:/zap/wrk:rw" \
+            ghcr.io/zaproxy/zaproxy:2.17.0 \
+            zap-full-scan.py \
+            -t http://127.0.0.1:3000 \
+            -m 5 \
+            -I \
+            -r /zap/wrk/security/reports/zap-full.html \
+            -J /zap/wrk/security/reports/zap-full.json \
+            -w /zap/wrk/security/reports/zap-full.md
+
+      - name: Upload ZAP full scan reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: zap-full-scan-report
+          path: |
+            security/reports/zap-full.html
+            security/reports/zap-full.json
+            security/reports/zap-full.md
+          retention-days: 30
+
+      - name: Display Juice Shop logs on failure
+        if: failure()
+        run: docker logs juice-shop || true
+
+      - name: Stop Juice Shop
+        if: always()
+        run: docker rm -f juice-shop || true

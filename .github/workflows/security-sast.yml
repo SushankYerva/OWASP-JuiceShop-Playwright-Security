@@ -1,0 +1,56 @@
+name: SAST - Semgrep
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  semgrep:
+    name: Semgrep SAST
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+
+      - name: Install Semgrep
+        run: |
+          python3 -m pip install semgrep==1.177.0
+          semgrep --version
+
+      - name: Create report directory
+        run: mkdir -p security/reports
+
+      - name: Run Semgrep SAST
+        run: |
+          semgrep scan \
+            --config p/default \
+            --config p/github-actions \
+            --oss-only \
+            --sarif-output security/reports/semgrep.sarif \
+            .
+
+      - name: Upload Semgrep report artifact
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: semgrep-sast-report
+          path: security/reports/semgrep.sarif
+          retention-days: 30
+
+      - name: Upload results to GitHub Code Scanning
+        if: always()
+        uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63
+        with:
+          sarif_file: security/reports/semgrep.sarif
+          category: semgrep

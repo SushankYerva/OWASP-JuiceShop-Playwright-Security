@@ -10,3 +10,7 @@ reports/
 blob-report/
 
 playwright/.auth/
+
+# Security scan outputs
+security/reports/*
+!security/reports/.gitkeep
