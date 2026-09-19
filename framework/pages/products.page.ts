@@ -1,6 +1,7 @@
 import {
   Locator,
   Page,
+  expect,
 } from '@playwright/test';
 
 export class ProductsPage {
@@ -58,17 +59,28 @@ export class ProductsPage {
     productName: string,
   ): Promise<void> {
     const product =
-      this.productByName(productName);
+      this.productByName(
+        productName,
+      );
+
+    await expect(
+      product,
+    ).toBeVisible();
 
     const addButton =
-      product.getByRole('button', {
-        name: /add to basket/i,
-      });
+      product.getByRole(
+        'button',
+        {
+          name: /add to basket/i,
+        },
+      );
+
+    await expect(
+      addButton,
+    ).toBeVisible();
 
     await addButton.click();
 
-    // Wait for Juice Shop to confirm that the
-    // asynchronous basket operation completed.
     await this.page
       .locator('.confirmBar')
       .waitFor({

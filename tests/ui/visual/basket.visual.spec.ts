@@ -28,12 +28,13 @@ test(
     const basketPage =
       new BasketPage(page);
 
-    const productName = 'Apple Juice';
+    const productName = 'Apple Juice (1000ml)';
+    const searchName = 'Apple Juice';
 
     await productsPage.goto();
 
     await productsPage.search(
-      productName,
+      searchName,
     );
 
     await productsPage.addToBasket(

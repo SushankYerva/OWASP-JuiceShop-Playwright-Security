@@ -32,7 +32,7 @@ test(
 
     await expect(
       productsPage.productByName(
-        'Apple Juice',
+        'Apple Juice (1000ml)',
       ),
     ).toBeVisible();
   },
