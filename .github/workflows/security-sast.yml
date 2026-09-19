@@ -15,6 +15,7 @@ permissions:
   actions: read
 
 jobs:
+  
   semgrep:
     name: Semgrep SAST
     runs-on: ubuntu-latest

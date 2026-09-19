@@ -2,13 +2,29 @@ name: Playwright Tests
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+    paths-ignore:
+      - '.github/workflows/security-*.yml'
+      - '.github/dependabot.yml'
+      - 'security/**'
+      - 'docs/**'
+      - '**/*.md'
+
   pull_request:
-    branches: [main]
+    paths-ignore:
+      - '.github/workflows/security-*.yml'
+      - '.github/dependabot.yml'
+      - 'security/**'
+      - 'docs/**'
+      - '**/*.md'
+
   workflow_dispatch:
 
 jobs:
   test:
+    if: ${{ !(github.actor == 'dependabot[bot]' && startsWith(github.head_ref, 'dependabot/github_actions/')) }}
+
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
