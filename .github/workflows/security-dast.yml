@@ -10,25 +10,33 @@ jobs:
   zap-full-scan:
     name: ZAP Full Scan
     runs-on: ubuntu-latest
+    timeout-minutes: 40
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
-      - name: Create report directory
-        run: mkdir -p security/reports
+      - name: Create ZAP report directory
+        run: |
+          mkdir -p security/reports
+          chmod 777 security/reports
+
+      - name: Create DAST Docker network
+        run: |
+          docker network create dast-network
 
       - name: Start OWASP Juice Shop
         run: |
           docker run -d \
             --name juice-shop \
+            --network dast-network \
             -p 3000:3000 \
             bkimminich/juice-shop:v20.2.0
 
       - name: Wait for Juice Shop
         run: |
           for i in {1..30}; do
-            if curl -fsS http://localhost:3000 > /dev/null; then
+            if curl -fsS http://127.0.0.1:3000 > /dev/null; then
               echo "Juice Shop is ready"
               exit 0
             fi
@@ -37,25 +45,42 @@ jobs:
             sleep 5
           done
 
-          echo "Juice Shop failed to start"
+          echo "Juice Shop failed to start."
           docker logs juice-shop
           exit 1
 
-      - name: Run ZAP full scan
+      - name: Verify ZAP container can reach Juice Shop
         run: |
           docker run --rm \
-            --network host \
-            -v "${{ github.workspace }}:/zap/wrk:rw" \
+            --network dast-network \
+            ghcr.io/zaproxy/zaproxy:2.17.0 \
+            python -c "import urllib.request; response=urllib.request.urlopen('http://juice-shop:3000'); print('HTTP status:', response.status)"
+
+      - name: Run ZAP full scan
+        run: |
+          set -o pipefail
+
+          docker run --rm \
+            --network dast-network \
+            -v "${{ github.workspace }}/security/reports:/zap/wrk:rw" \
             ghcr.io/zaproxy/zaproxy:2.17.0 \
             zap-full-scan.py \
-            -t http://127.0.0.1:3000 \
-            -m 5 \
+            -t http://juice-shop:3000 \
+            -m 3 \
             -I \
-            -r /zap/wrk/security/reports/zap-full.html \
-            -J /zap/wrk/security/reports/zap-full.json \
-            -w /zap/wrk/security/reports/zap-full.md
+            -d \
+            -r zap-full.html \
+            -J zap-full.json \
+            -w zap-full.md \
+            2>&1 | tee security/reports/zap-full-console.log
 
-      - name: Upload ZAP full scan reports
+      - name: List generated ZAP reports
+        if: always()
+        run: |
+          echo "Generated files:"
+          ls -lah security/reports || true
+
+      - name: Upload ZAP scan reports
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
@@ -64,12 +89,17 @@ jobs:
             security/reports/zap-full.html
             security/reports/zap-full.json
             security/reports/zap-full.md
+            security/reports/zap-full-console.log
+          if-no-files-found: warn
           retention-days: 30
 
       - name: Display Juice Shop logs on failure
         if: failure()
-        run: docker logs juice-shop || true
+        run: |
+          docker logs juice-shop || true
 
-      - name: Stop Juice Shop
+      - name: Cleanup DAST environment
         if: always()
-        run: docker rm -f juice-shop || true
+        run: |
+          docker rm -f juice-shop || true
+          docker network rm dast-network || true
