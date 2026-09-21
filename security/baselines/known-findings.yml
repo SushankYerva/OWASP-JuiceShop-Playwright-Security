@@ -1,0 +1,181 @@
+version: 1
+
+target:
+  name: "OWASP Juice Shop"
+  purpose: "Intentionally vulnerable application used as the system under test"
+
+policy:
+  framework_findings:
+    description: >
+      Security findings introduced by the Playwright automation framework,
+      repository configuration, dependencies, or CI/CD configuration are
+      treated as regressions and may fail CI.
+
+  target_findings:
+    description: >
+      Known vulnerabilities intentionally present in OWASP Juice Shop are
+      documented and baselined so they remain visible without permanently
+      failing CI.
+
+  new_findings:
+    description: >
+      New security findings that are not part of the approved baseline must
+      be reviewed before being accepted.
+
+findings:
+
+  # ---------------------------------------------------------
+  # OWASP ZAP DAST
+  # ---------------------------------------------------------
+
+  - id: "ZAP-10095"
+    source: "OWASP ZAP"
+    rule_id: "10095"
+    title: "Backup File Disclosure"
+    severity: "medium"
+    classification: "known-target-vulnerability"
+    ci_policy: "baseline"
+    status: "accepted-for-training-target"
+
+  - id: "ZAP-40038"
+    source: "OWASP ZAP"
+    rule_id: "40038"
+    title: "Bypassing 403"
+    severity: "medium"
+    classification: "known-target-vulnerability"
+    ci_policy: "baseline"
+    status: "accepted-for-training-target"
+
+  - id: "ZAP-40040"
+    source: "OWASP ZAP"
+    rule_id: "40040"
+    title: "CORS Misconfiguration"
+    severity: "medium"
+    classification: "known-target-vulnerability"
+    ci_policy: "baseline"
+    status: "accepted-for-training-target"
+
+  - id: "ZAP-10038"
+    source: "OWASP ZAP"
+    rule_id: "10038"
+    title: "Content Security Policy Header Not Set"
+    severity: "medium"
+    classification: "known-target-vulnerability"
+    ci_policy: "baseline"
+    status: "accepted-for-training-target"
+
+  - id: "ZAP-10098"
+    source: "OWASP ZAP"
+    rule_id: "10098"
+    title: "Cross-Domain Misconfiguration"
+    severity: "medium"
+    classification: "known-target-vulnerability"
+    ci_policy: "baseline"
+    status: "accepted-for-training-target"
+
+  - id: "ZAP-90004"
+    source: "OWASP ZAP"
+    rule_id: "90004"
+    title: "Cross-Origin Policy Header Missing or Invalid"
+    severity: "low"
+    classification: "known-target-vulnerability"
+    ci_policy: "baseline"
+    status: "accepted-for-training-target"
+    notes:
+      - "Observed for Cross-Origin-Embedder-Policy"
+      - "Observed for Cross-Origin-Opener-Policy"
+
+  - id: "ZAP-10110"
+    source: "OWASP ZAP"
+    rule_id: "10110"
+    title: "Dangerous JS Functions"
+    severity: "low"
+    classification: "known-target-vulnerability"
+    ci_policy: "baseline"
+    status: "accepted-for-training-target"
+
+  - id: "ZAP-10063"
+    source: "OWASP ZAP"
+    rule_id: "10063"
+    title: "Deprecated Feature Policy Header Set"
+    severity: "low"
+    classification: "known-target-vulnerability"
+    ci_policy: "baseline"
+    status: "accepted-for-training-target"
+
+  - id: "ZAP-10096"
+    source: "OWASP ZAP"
+    rule_id: "10096"
+    title: "Timestamp Disclosure - Unix"
+    severity: "low"
+    classification: "known-target-vulnerability"
+    ci_policy: "baseline"
+    status: "accepted-for-training-target"
+
+  - id: "ZAP-10109"
+    source: "OWASP ZAP"
+    rule_id: "10109"
+    title: "Modern Web Application"
+    severity: "informational"
+    classification: "informational"
+    ci_policy: "baseline"
+
+  - id: "ZAP-10049"
+    source: "OWASP ZAP"
+    rule_id: "10049"
+    title: "Cacheability Findings"
+    severity: "informational"
+    classification: "informational"
+    ci_policy: "baseline"
+    notes:
+      - "Non-Storable Content"
+      - "Storable and Cacheable Content"
+      - "Storable but Non-Cacheable Content"
+
+  - id: "ZAP-10104"
+    source: "OWASP ZAP"
+    rule_id: "10104"
+    title: "User Agent Fuzzer"
+    severity: "informational"
+    classification: "informational"
+    ci_policy: "baseline"
+
+  # ---------------------------------------------------------
+  # PLAYWRIGHT SECURITY TEST FINDINGS
+  # ---------------------------------------------------------
+
+  - id: "PW-SEC-001"
+    source: "Playwright"
+    title: "Complex search input can return HTTP 500"
+    severity: "medium"
+    classification: "known-target-vulnerability"
+    ci_policy: "report"
+    status: "accepted-for-training-target"
+
+  - id: "PW-SEC-002"
+    source: "Playwright"
+    title: "HTML-like search input can be interpreted as DOM markup"
+    severity: "medium"
+    classification: "known-target-vulnerability"
+    ci_policy: "report"
+    status: "accepted-for-training-target"
+
+  - id: "PW-SEC-003"
+    source: "Playwright"
+    title: "Unsupported HTTP method can cause HTTP 500"
+    severity: "low"
+    classification: "known-target-vulnerability"
+    ci_policy: "report"
+    status: "accepted-for-training-target"
+
+  - id: "PW-SEC-004"
+    source: "Playwright"
+    title: "Security response headers missing"
+    severity: "medium"
+    classification: "known-target-vulnerability"
+    ci_policy: "report"
+    status: "accepted-for-training-target"
+    notes:
+      - "Content-Security-Policy missing"
+      - "Referrer-Policy missing"
+      - "Permissions-Policy missing"
