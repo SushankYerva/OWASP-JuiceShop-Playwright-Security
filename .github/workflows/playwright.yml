@@ -21,6 +21,10 @@ on:
 
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     if: ${{ !(github.actor == 'dependabot[bot]' && startsWith(github.head_ref, 'dependabot/github_actions/')) }}

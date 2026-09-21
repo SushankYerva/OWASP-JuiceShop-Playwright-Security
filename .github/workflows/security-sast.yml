@@ -8,7 +8,9 @@ on:
   pull_request:
 
   workflow_dispatch:
-
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
   security-events: write
@@ -38,6 +40,7 @@ jobs:
             --config p/default \
             --config p/github-actions \
             --oss-only \
+            --error \
             --sarif-output security/reports/semgrep.sarif \
             .
 
